@@ -62,9 +62,9 @@ else:
 
         bigquery_client = bigquery.Client(credentials=credentials)
 
-        QUERY = """
-        SELECT * FROM `monica-test-466516.ecommerce.orders` LIMIT 10
-        """
+        QUERY = "SELECT * FROM `monica-test-466516.ecommerce.orders` LIMIT 10"
 
         Query_Results = bigquery_client.query(QUERY)
         data = Query_Results.to_dataframe()
+
+        st.dataframe(data, use_container_width=True)

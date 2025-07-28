@@ -34,7 +34,7 @@ else:
 
     # Create a chat input field to allow the user to enter a message. This will display
     # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
+    if prompt := st.chat_input("Get me the first 10 rows of the table."):
 
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
@@ -44,7 +44,10 @@ else:
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[
+            messages=["role": "system", "content": f"You are a BigQuery SQL generator. Based on the table schema, respond only with the SQL query needed \
+                      to answer the user's question. It includes the following columns:\
+                         order_id, customer_id, order_date, product_category, product_name, quantity, unit_price, order_status, country. The name of table is \
+                      monica-test-466516.ecommerce.orders."] + [
                 {"role": m["role"], "content": m["content"]}
                 for m in st.session_state.messages
             ],

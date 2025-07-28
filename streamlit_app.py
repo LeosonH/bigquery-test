@@ -1,7 +1,6 @@
 import streamlit as st
 from openai import OpenAI
 from google.cloud import bigquery
-bigquery_client = bigquery.Client()
 
 # Show title and description.
 st.title("💬 Chatbot")
@@ -57,9 +56,15 @@ else:
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
+        credentials = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"]
+        )
+
+        bigquery_client = bigquery.Client(credentials=credentials)
+
         QUERY = """
         SELECT * FROM `monica-test-466516.ecommerce.orders` LIMIT 10
         """
-        
+
         Query_Results = bigquery_client.query(QUERY)
-        df = Query_Results.to_dataframe()
+        data = Query_Results.to_dataframe()
